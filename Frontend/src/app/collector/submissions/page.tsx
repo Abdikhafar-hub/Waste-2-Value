@@ -56,7 +56,7 @@ export default function CollectorSubmissionsPage() {
             <Select
               value={query.status ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, status: event.target.value as CollectorSubmissionQuery["status"] }))}
-              className="w-[170px]"
+              className="w-full sm:w-[170px]"
             >
               <option value="ALL">All Statuses</option>
               <option value="SUBMITTED">Submitted</option>
@@ -71,7 +71,7 @@ export default function CollectorSubmissionsPage() {
             <Select
               value={query.wasteType ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, wasteType: event.target.value as CollectorSubmissionQuery["wasteType"] }))}
-              className="w-[150px]"
+              className="w-full sm:w-[150px]"
             >
               <option value="ALL">All Types</option>
               <option value="ORGANIC">Organic</option>
@@ -81,7 +81,7 @@ export default function CollectorSubmissionsPage() {
             <Select
               value={query.dateWindow ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, dateWindow: event.target.value as CollectorSubmissionQuery["dateWindow"] }))}
-              className="w-[150px]"
+              className="w-full sm:w-[150px]"
             >
               <option value="ALL">All Dates</option>
               <option value="7D">Last 7 Days</option>

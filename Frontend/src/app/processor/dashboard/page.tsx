@@ -32,7 +32,7 @@ export default function ProcessorDashboardPage() {
         <LoadingState rows={7} />
       ) : (
         <>
-          <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+          <section className="grid grid-cols-2 gap-3 xl:grid-cols-6">
             <ProductionSummaryCard label="Assigned" value={String(dashboard.data.metrics.assignedCount)} />
             <ProductionSummaryCard label="Awaiting Receipt" value={String(dashboard.data.metrics.awaitingReceipt)} />
             <ProductionSummaryCard label="In Processing" value={String(dashboard.data.metrics.inProcessing)} />

@@ -43,7 +43,7 @@ export default function BuyerMarketplacePage() {
             <Select
               value={query.category ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, category: event.target.value as BuyerMarketplaceQuery["category"] }))}
-              className="w-[190px]"
+              className="w-full sm:w-[190px]"
             >
               <option value="ALL">All Categories</option>
               {(meta.data?.categories ?? []).map((category) => (
@@ -54,7 +54,7 @@ export default function BuyerMarketplacePage() {
             <Select
               value={query.availability ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, availability: event.target.value as BuyerMarketplaceQuery["availability"] }))}
-              className="w-[170px]"
+              className="w-full sm:w-[170px]"
             >
               <option value="ALL">Any Availability</option>
               <option value="IN_STOCK">In Stock</option>
@@ -70,7 +70,7 @@ export default function BuyerMarketplacePage() {
                   maxPrice: event.target.value === "ALL" ? "ALL" : Number(event.target.value),
                 }))
               }
-              className="w-[170px]"
+              className="w-full sm:w-[170px]"
             >
               <option value="ALL">Any Price</option>
               <option value="100">Up to 100 KES</option>

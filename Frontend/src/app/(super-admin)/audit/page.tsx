@@ -52,7 +52,7 @@ export default function AuditPage() {
                   entityType: event.target.value as AuditQuery["entityType"],
                 }))
               }
-              className="w-[170px]"
+              className="w-full sm:w-[170px]"
             >
               <option value="ALL">All Entities</option>
               <option value="ORGANIZATION">Organization</option>
@@ -64,7 +64,7 @@ export default function AuditPage() {
             <Select
               value={query.action ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, action: event.target.value }))}
-              className="w-[220px]"
+              className="w-full sm:w-[220px]"
             >
               <option value="ALL">All Actions</option>
               {(actionsResource.data ?? []).map((action) => (

@@ -106,7 +106,7 @@ export default function OrganizationsPage() {
                   status: event.target.value as OrganizationQuery["status"],
                 }))
               }
-              className="w-[150px]"
+              className="w-full sm:w-[150px]"
             >
               <option value="ALL">All Status</option>
               <option value="ACTIVE">Active</option>
@@ -122,7 +122,7 @@ export default function OrganizationsPage() {
                   createdWindow: event.target.value as OrganizationQuery["createdWindow"],
                 }))
               }
-              className="w-[150px]"
+              className="w-full sm:w-[150px]"
             >
               <option value="ALL">Any Date</option>
               <option value="7D">Last 7 days</option>

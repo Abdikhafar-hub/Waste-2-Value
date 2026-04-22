@@ -102,7 +102,7 @@ export default function WastePage() {
             <Select
               value={query.status ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, status: event.target.value as WasteQuery["status"] }))}
-              className="w-[170px]"
+              className="w-full sm:w-[170px]"
             >
               <option value="ALL">All Status</option>
               <option value="SUBMITTED">Submitted</option>
@@ -117,7 +117,7 @@ export default function WastePage() {
             <Select
               value={query.wasteType ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, wasteType: event.target.value as WasteQuery["wasteType"] }))}
-              className="w-[150px]"
+              className="w-full sm:w-[150px]"
             >
               <option value="ALL">All Types</option>
               <option value="ORGANIC">Organic</option>
@@ -130,7 +130,7 @@ export default function WastePage() {
             <Select
               value={query.zone ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, zone: event.target.value }))}
-              className="w-[150px]"
+              className="w-full sm:w-[150px]"
             >
               <option value="ALL">All Zones</option>
               {(wasteFilters.data?.zones ?? []).map((zone) => (
@@ -141,7 +141,7 @@ export default function WastePage() {
             <Select
               value={query.collectorId ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, collectorId: event.target.value }))}
-              className="w-[170px]"
+              className="w-full sm:w-[170px]"
             >
               <option value="ALL">All Collectors</option>
               {(wasteFilters.data?.collectors ?? []).map((collector) => (
@@ -152,7 +152,7 @@ export default function WastePage() {
             <Select
               value={query.processorId ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, processorId: event.target.value }))}
-              className="w-[170px]"
+              className="w-full sm:w-[170px]"
             >
               <option value="ALL">All Processors</option>
               {(wasteFilters.data?.processors ?? []).map((processor) => (

@@ -75,7 +75,7 @@ export default function OrdersPage() {
             <Select
               value={query.paymentStatus ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, paymentStatus: event.target.value as OrderQuery["paymentStatus"] }))}
-              className="w-[170px]"
+              className="w-full sm:w-[170px]"
             >
               <option value="ALL">All Payments</option>
               <option value="PAID">Paid</option>
@@ -85,7 +85,7 @@ export default function OrdersPage() {
             <Select
               value={query.deliveryStatus ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, deliveryStatus: event.target.value as OrderQuery["deliveryStatus"] }))}
-              className="w-[170px]"
+              className="w-full sm:w-[170px]"
             >
               <option value="ALL">All Delivery</option>
               <option value="PENDING">Pending</option>

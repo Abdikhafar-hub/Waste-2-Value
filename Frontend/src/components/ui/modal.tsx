@@ -19,8 +19,13 @@ export function Modal({ open, title, description, children, onClose, className }
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#06110b]/45 px-4 py-6 backdrop-blur-[1px]">
-      <div className={cn("w-full max-w-xl rounded-2xl border border-border bg-white p-5 shadow-premium-lg", className)}>
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-[#06110b]/45 px-4 py-6 backdrop-blur-[1px] sm:items-center">
+      <div
+        className={cn(
+          "max-h-[calc(100vh-3rem)] w-full overflow-y-auto rounded-2xl border border-border bg-white p-5 shadow-premium-lg sm:max-h-[85vh]",
+          className,
+        )}
+      >
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
             <h2 className="text-lg font-semibold text-foreground">{title}</h2>

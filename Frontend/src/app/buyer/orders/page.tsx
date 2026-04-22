@@ -48,7 +48,7 @@ export default function BuyerOrdersPage() {
             <Select
               value={query.orderStatus ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, orderStatus: event.target.value as BuyerOrderQuery["orderStatus"] }))}
-              className="w-[170px]"
+              className="w-full sm:w-[170px]"
             >
               <option value="ALL">All Order Status</option>
               <option value="PLACED">Placed</option>
@@ -60,7 +60,7 @@ export default function BuyerOrdersPage() {
             <Select
               value={query.paymentStatus ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, paymentStatus: event.target.value as BuyerOrderQuery["paymentStatus"] }))}
-              className="w-[170px]"
+              className="w-full sm:w-[170px]"
             >
               <option value="ALL">All Payment</option>
               <option value="PAID">Paid</option>
@@ -71,7 +71,7 @@ export default function BuyerOrdersPage() {
             <Select
               value={query.deliveryStatus ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, deliveryStatus: event.target.value as BuyerOrderQuery["deliveryStatus"] }))}
-              className="w-[170px]"
+              className="w-full sm:w-[170px]"
             >
               <option value="ALL">All Delivery</option>
               <option value="PENDING">Pending</option>

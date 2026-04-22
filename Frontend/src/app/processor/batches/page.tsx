@@ -67,7 +67,7 @@ export default function ProcessorBatchesPage() {
             <Select
               value={query.status ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, status: event.target.value as ProcessorBatchQuery["status"] }))}
-              className="w-[150px]"
+              className="w-full sm:w-[150px]"
             >
               <option value="ALL">All Status</option>
               <option value="DRAFT">Draft</option>
@@ -78,7 +78,7 @@ export default function ProcessorBatchesPage() {
             <Select
               value={query.wasteType ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, wasteType: event.target.value as ProcessorBatchQuery["wasteType"] }))}
-              className="w-[150px]"
+              className="w-full sm:w-[150px]"
             >
               <option value="ALL">All Types</option>
               <option value="ORGANIC">Organic</option>

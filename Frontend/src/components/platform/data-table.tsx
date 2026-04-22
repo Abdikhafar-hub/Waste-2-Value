@@ -8,7 +8,7 @@ interface DataTableProps {
 export function DataTable({ headers, children }: DataTableProps) {
   return (
     <div className="scrollbar-subtle overflow-x-auto rounded-xl border border-border">
-      <table className="min-w-full divide-y divide-border bg-white">
+      <table className="w-full min-w-[640px] divide-y divide-border bg-white">
         <thead className="bg-surface-soft">
           <tr>
             {headers.map((header, index) => (

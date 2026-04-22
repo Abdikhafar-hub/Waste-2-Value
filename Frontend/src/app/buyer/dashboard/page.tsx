@@ -45,7 +45,7 @@ export default function BuyerDashboardPage() {
         <LoadingState rows={7} />
       ) : (
         <>
-          <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <section className="grid grid-cols-2 gap-3 xl:grid-cols-4">
             <OrderSummaryCard label="Total Orders" value={String(dashboard.data.metrics.totalOrders)} />
             <OrderSummaryCard label="Active Orders" value={String(dashboard.data.metrics.activeOrders)} />
             <OrderSummaryCard label="Delivered" value={String(dashboard.data.metrics.deliveredOrders)} />

@@ -82,7 +82,7 @@ export default function ProcessorAssignmentsPage() {
             <Select
               value={query.status ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, status: event.target.value as ProcessorAssignmentQuery["status"] }))}
-              className="w-[180px]"
+              className="w-full sm:w-[180px]"
             >
               <option value="ALL">All Statuses</option>
               <option value="AWAITING_RECEIPT">Awaiting Receipt</option>
@@ -94,7 +94,7 @@ export default function ProcessorAssignmentsPage() {
             <Select
               value={query.wasteType ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, wasteType: event.target.value as ProcessorAssignmentQuery["wasteType"] }))}
-              className="w-[150px]"
+              className="w-full sm:w-[150px]"
             >
               <option value="ALL">All Types</option>
               <option value="ORGANIC">Organic</option>
@@ -104,7 +104,7 @@ export default function ProcessorAssignmentsPage() {
             <Select
               value={query.zone ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, zone: event.target.value }))}
-              className="w-[140px]"
+              className="w-full sm:w-[140px]"
             >
               <option value="ALL">All Zones</option>
               {(filters.data?.zones ?? []).map((zone) => (
@@ -115,7 +115,7 @@ export default function ProcessorAssignmentsPage() {
             <Select
               value={query.processingCenter ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, processingCenter: event.target.value }))}
-              className="w-[190px]"
+              className="w-full sm:w-[190px]"
             >
               <option value="ALL">All Centers</option>
               {(filters.data?.processingCenters ?? []).map((center) => (

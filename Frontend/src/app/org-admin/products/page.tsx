@@ -75,7 +75,7 @@ export default function ProductsPage() {
             <Select
               value={query.category ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, category: event.target.value as ProductQuery["category"] }))}
-              className="w-[170px]"
+              className="w-full sm:w-[170px]"
             >
               <option value="ALL">All Categories</option>
               <option value="LARVAE">Larvae</option>
@@ -88,7 +88,7 @@ export default function ProductsPage() {
             <Select
               value={query.status ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, status: event.target.value as ProductQuery["status"] }))}
-              className="w-[150px]"
+              className="w-full sm:w-[150px]"
             >
               <option value="ALL">All Status</option>
               <option value="ACTIVE">Active</option>

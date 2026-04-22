@@ -53,7 +53,7 @@ export default function OrgAdminDashboardPage() {
         <LoadingState rows={7} />
       ) : (
         <>
-          <section className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(210px,1fr))]">
+          <section className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-4">
             <KpiCard label="Waste Collected" value={formatWeightKg(dashboard.data.kpis.totalWasteKg)} trend="This month" />
             <KpiCard label="Pending Approvals" value={String(dashboard.data.kpis.pendingApprovals)} trend="Needs review" />
             <KpiCard label="Active Processors" value={String(dashboard.data.kpis.activeProcessors)} trend="On shift" />

@@ -45,7 +45,7 @@ export default function SuperAdminDashboardPage() {
         <LoadingState rows={6} />
       ) : (
         <div className="space-y-4">
-          <section className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(210px,1fr))]">
+          <section className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-5">
             <KpiCard
               label="Total Organizations"
               value={String(data.metrics.totalOrganizations)}

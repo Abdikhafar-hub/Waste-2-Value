@@ -70,7 +70,7 @@ export default function OrgAdminTeamPage() {
             <Select
               value={query.role ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, role: event.target.value as TeamQuery["role"] }))}
-              className="w-[170px]"
+              className="w-full sm:w-[170px]"
             >
               <option value="ALL">All Roles</option>
               <option value="ORG_ADMIN">Org Admin</option>
@@ -82,7 +82,7 @@ export default function OrgAdminTeamPage() {
             <Select
               value={query.status ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, status: event.target.value as TeamQuery["status"] }))}
-              className="w-[170px]"
+              className="w-full sm:w-[170px]"
             >
               <option value="ALL">All Status</option>
               <option value="ACTIVE">Active</option>

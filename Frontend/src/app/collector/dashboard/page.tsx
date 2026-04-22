@@ -39,7 +39,7 @@ export default function CollectorDashboardPage() {
         <LoadingState rows={6} />
       ) : (
         <>
-          <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             <WalletSummaryCard label="Total Submissions" value={String(dashboard.data.kpis.totalSubmissions)} />
             <WalletSummaryCard label="Pending" value={String(dashboard.data.kpis.pendingSubmissions)} />
             <WalletSummaryCard label="Approved" value={String(dashboard.data.kpis.approvedSubmissions)} />

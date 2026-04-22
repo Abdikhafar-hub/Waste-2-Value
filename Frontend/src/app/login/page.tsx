@@ -100,7 +100,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[url('/login.png')] bg-cover bg-left bg-no-repeat lg:p-4">
+    <div className="min-h-screen bg-[url('/loginimage.png')] bg-cover bg-left bg-no-repeat lg:p-4">
       <div className="grid min-h-screen w-full overflow-hidden border-y border-border shadow-premium-lg lg:min-h-[calc(100vh-2rem)] lg:rounded-2xl lg:border lg:grid-cols-2">
         <section className="relative flex flex-col justify-center gap-10 border-b border-border px-6 py-8 sm:px-8 sm:py-10 lg:border-b-0 lg:border-r lg:px-10 lg:py-12">
           <div className="mx-auto w-full max-w-2xl rounded-2xl bg-white/60 p-4 backdrop-blur-sm sm:p-5">
@@ -133,7 +133,7 @@ export default function LoginPage() {
           </div>
 
           <div className="mx-auto w-full max-w-2xl">
-            <div className="grid grid-cols-3 gap-2.5 rounded-xl border border-border bg-white/90 p-3">
+            <div className="grid gap-2.5 rounded-xl border border-border bg-white/90 p-3 sm:grid-cols-3">
               <div>
                 <p className="text-xs text-muted-foreground">Organizations</p>
                 <p className="text-lg font-semibold text-foreground">8</p>

@@ -64,7 +64,7 @@ export default function PlatformUsersPage() {
             <Select
               value={query.role ?? "ALL"}
               onChange={(event) => setQuery((prev) => ({ ...prev, role: event.target.value as UsersQuery["role"] }))}
-              className="w-[160px]"
+              className="w-full sm:w-[160px]"
             >
               <option value="ALL">All Roles</option>
               <option value="SUPER_ADMIN">Super Admin</option>
@@ -82,7 +82,7 @@ export default function PlatformUsersPage() {
                   status: event.target.value as UsersQuery["status"],
                 }))
               }
-              className="w-[160px]"
+              className="w-full sm:w-[160px]"
             >
               <option value="ALL">All Status</option>
               <option value="ACTIVE">Active</option>
@@ -98,7 +98,7 @@ export default function PlatformUsersPage() {
                   organizationId: event.target.value as UsersQuery["organizationId"],
                 }))
               }
-              className="w-[180px]"
+              className="w-full sm:w-[180px]"
             >
               <option value="ALL">All Organizations</option>
               {(organizationsResource.data ?? []).map((organization) => (
