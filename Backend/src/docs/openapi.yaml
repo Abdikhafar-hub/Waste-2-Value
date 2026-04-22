@@ -1,0 +1,110 @@
+openapi: 3.0.3
+info:
+  title: Waste2Value API
+  version: 1.0.0
+  description: Multi-tenant backend API for waste tracking, wallets, production, marketplace, ESG, analytics, AI foundations, energy, and audit.
+servers:
+  - url: http://localhost:4000/api/v1
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Envelope:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          nullable: true
+paths:
+  /health:
+    get:
+      security: []
+      summary: API liveness check
+      responses:
+        '200':
+          description: Healthy
+  /health/ready:
+    get:
+      security: []
+      summary: Database readiness check
+      responses:
+        '200':
+          description: Ready
+  /auth/login:
+    post:
+      security: []
+      summary: Login with email and password
+      responses:
+        '200':
+          description: Authenticated
+  /auth/refresh:
+    post:
+      security: []
+      summary: Rotate a refresh token and return fresh tokens
+      responses:
+        '200':
+          description: Token refreshed
+  /platform/organizations:
+    get:
+      summary: Super admin list organizations
+      responses:
+        '200':
+          description: Organization list
+    post:
+      summary: Super admin create organization
+      responses:
+        '201':
+          description: Organization created
+  /waste/submissions:
+    get:
+      summary: List tenant-scoped waste submissions according to role
+      responses:
+        '200':
+          description: Submission list
+    post:
+      summary: Collector creates a waste submission
+      responses:
+        '201':
+          description: Submission created
+  /wallet/me:
+    get:
+      summary: Current user's ledger wallet and computed balance
+      responses:
+        '200':
+          description: Wallet detail
+  /production/batches:
+    get:
+      summary: List production batches
+      responses:
+        '200':
+          description: Batches
+    post:
+      summary: Processor creates production batch from traceable waste inputs
+      responses:
+        '201':
+          description: Batch created
+  /orders:
+    get:
+      summary: List orders according to role
+      responses:
+        '200':
+          description: Orders
+    post:
+      summary: Buyer creates an order with transactional stock deduction
+      responses:
+        '201':
+          description: Order created
+  /analytics/dashboard:
+    get:
+      summary: Tenant-scoped operations dashboard
+      responses:
+        '200':
+          description: Dashboard metrics

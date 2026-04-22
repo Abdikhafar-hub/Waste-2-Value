@@ -1,0 +1,815 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrganizationStatus {
+  ACTIVE
+  SUSPENDED
+  ARCHIVED
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ORG_ADMIN
+  COLLECTOR
+  PROCESSOR
+  BUYER
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DEACTIVATED
+}
+
+enum WasteType {
+  ORGANIC
+  PLASTIC
+}
+
+enum WasteSubmissionStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  ASSIGNED
+  RECEIVED
+  PROCESSING
+  PROCESSED
+  CONVERTED
+  ARCHIVED
+}
+
+enum SubmissionSource {
+  MANUAL
+  QR
+  NFC
+  API
+}
+
+enum WalletStatus {
+  ACTIVE
+  SUSPENDED
+  CLOSED
+}
+
+enum WalletTransactionType {
+  CREDIT_EARNED
+  CREDIT_ADJUSTMENT
+  CREDIT_REDEEMED
+  CREDIT_REWARD
+  CREDIT_REVERSAL
+}
+
+enum CreditRedemptionStatus {
+  REQUESTED
+  APPROVED
+  REJECTED
+  FULFILLED
+  CANCELLED
+}
+
+enum ProductCategory {
+  LARVAE
+  FERTILIZER
+  BRICKS
+  GARDEN_STAKES
+  OTHER
+}
+
+enum ProductionBatchStatus {
+  DRAFT
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum InventoryMovementType {
+  PRODUCTION_IN
+  SALE_OUT
+  ADJUSTMENT
+  RETURN
+  DAMAGE
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  READY
+  DISPATCHED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PARTIALLY_PAID
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum DeliveryStatus {
+  PENDING
+  ASSIGNED
+  IN_TRANSIT
+  DELIVERED
+  FAILED
+}
+
+enum ESGReportStatus {
+  GENERATED
+  REVIEWED
+  ARCHIVED
+}
+
+enum AIInsightType {
+  PREDICTION
+  ROUTE_RECOMMENDATION
+  INEFFICIENCY_FLAG
+  HOTSPOT
+  OTHER
+}
+
+enum SystemSettingScope {
+  PLATFORM
+  ORGANIZATION
+}
+
+model Organization {
+  id              String             @id @default(cuid())
+  name            String
+  slug            String             @unique
+  description     String?
+  status          OrganizationStatus @default(ACTIVE)
+  createdByUserId String?
+  createdBy       User?              @relation("OrganizationsCreatedBy", fields: [createdByUserId], references: [id])
+  users           User[]             @relation("OrganizationUsers")
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  @@index([status])
+}
+
+model User {
+  id                    String               @id @default(cuid())
+  organizationId        String?
+  organization          Organization?        @relation("OrganizationUsers", fields: [organizationId], references: [id])
+  email                 String               @unique
+  passwordHash          String
+  role                  UserRole
+  status                UserStatus           @default(ACTIVE)
+  isEmailVerified       Boolean              @default(false)
+  lastLoginAt           DateTime?
+  profile               UserProfile?
+  refreshTokens         RefreshToken[]
+  passwordResetTokens   PasswordResetToken[]
+  wallet                Wallet?
+  buyerProfile          BuyerProfile?
+  reputationProfile     ReputationProfile?
+  createdOrganizations  Organization[]       @relation("OrganizationsCreatedBy")
+  collectedWaste        WasteSubmission[]     @relation("WasteCollector")
+  assignedWaste         WasteSubmission[]     @relation("WasteProcessor")
+  changedWasteStatuses  WasteStatusHistory[]
+  productionBatches     ProductionBatch[]
+  orders                Order[]
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+
+  @@index([organizationId, role])
+  @@index([status])
+}
+
+model UserProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  firstName   String
+  lastName    String
+  phone       String?
+  avatarUrl   String?
+  nationalId  String?
+  gender      String?
+  dateOfBirth DateTime?
+  address     String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model RefreshToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  tokenHash String
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([tokenHash])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  tokenHash String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([tokenHash])
+}
+
+model Zone {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  code           String?
+  description    String?
+  latitude       Decimal? @db.Decimal(10, 7)
+  longitude      Decimal? @db.Decimal(10, 7)
+  isActive       Boolean  @default(true)
+  collectionPoints CollectionPoint[]
+  processingCenters ProcessingCenter[]
+  wasteSubmissions WasteSubmission[]
+  aiInsights      AIInsight[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([organizationId, code])
+  @@index([organizationId, isActive])
+}
+
+model CollectionPoint {
+  id             String   @id @default(cuid())
+  organizationId String
+  zoneId         String
+  zone           Zone     @relation(fields: [zoneId], references: [id])
+  name           String
+  description    String?
+  latitude       Decimal? @db.Decimal(10, 7)
+  longitude      Decimal? @db.Decimal(10, 7)
+  isActive       Boolean  @default(true)
+  wasteSubmissions WasteSubmission[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([organizationId, zoneId])
+}
+
+model ProcessingCenter {
+  id             String   @id @default(cuid())
+  organizationId String
+  zoneId         String?
+  zone           Zone?    @relation(fields: [zoneId], references: [id])
+  name           String
+  description    String?
+  latitude       Decimal? @db.Decimal(10, 7)
+  longitude      Decimal? @db.Decimal(10, 7)
+  isActive       Boolean  @default(true)
+  wasteSubmissions WasteSubmission[]
+  productionBatches ProductionBatch[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([organizationId, zoneId])
+}
+
+model WasteSubmission {
+  id                      String                @id @default(cuid())
+  organizationId          String
+  collectorUserId         String
+  collector               User                  @relation("WasteCollector", fields: [collectorUserId], references: [id])
+  zoneId                  String
+  zone                    Zone                  @relation(fields: [zoneId], references: [id])
+  collectionPointId       String?
+  collectionPoint         CollectionPoint?      @relation(fields: [collectionPointId], references: [id])
+  assignedProcessorUserId String?
+  assignedProcessor       User?                 @relation("WasteProcessor", fields: [assignedProcessorUserId], references: [id])
+  processingCenterId      String?
+  processingCenter        ProcessingCenter?     @relation(fields: [processingCenterId], references: [id])
+  wasteType               WasteType
+  weightKg                Decimal               @db.Decimal(12, 3)
+  tagCode                 String?
+  source                  SubmissionSource      @default(MANUAL)
+  imageUrl                String?
+  notes                   String?
+  status                  WasteSubmissionStatus @default(SUBMITTED)
+  submittedAt             DateTime              @default(now())
+  approvedAt              DateTime?
+  receivedAt              DateTime?
+  processedAt             DateTime?
+  metadata                Json?
+  histories               WasteStatusHistory[]
+  tags                    WasteTag[]
+  productionInputs        ProductionBatchInput[]
+  createdAt               DateTime              @default(now())
+  updatedAt               DateTime              @updatedAt
+
+  @@index([organizationId, status])
+  @@index([organizationId, collectorUserId])
+  @@index([organizationId, assignedProcessorUserId])
+  @@index([organizationId, zoneId])
+}
+
+model WasteStatusHistory {
+  id                String                 @id @default(cuid())
+  organizationId    String
+  wasteSubmissionId String
+  wasteSubmission   WasteSubmission        @relation(fields: [wasteSubmissionId], references: [id])
+  fromStatus        WasteSubmissionStatus?
+  toStatus          WasteSubmissionStatus
+  changedByUserId   String
+  changedBy         User                   @relation(fields: [changedByUserId], references: [id])
+  note              String?
+  createdAt         DateTime               @default(now())
+
+  @@index([organizationId, wasteSubmissionId])
+  @@index([organizationId, changedByUserId, createdAt])
+}
+
+model WasteTag {
+  id                      String           @id @default(cuid())
+  organizationId          String
+  code                    String
+  type                    String?
+  isActive                Boolean          @default(true)
+  linkedWasteSubmissionId String?
+  linkedWasteSubmission   WasteSubmission? @relation(fields: [linkedWasteSubmissionId], references: [id])
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+
+  @@unique([organizationId, code])
+  @@index([organizationId, isActive])
+}
+
+model Wallet {
+  id             String       @id @default(cuid())
+  organizationId String
+  userId         String       @unique
+  user           User         @relation(fields: [userId], references: [id])
+  status         WalletStatus @default(ACTIVE)
+  transactions   WalletTransaction[]
+  redemptions    CreditRedemptionRequest[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([organizationId])
+}
+
+model WalletTransaction {
+  id              String                @id @default(cuid())
+  organizationId  String
+  walletId        String
+  wallet          Wallet                @relation(fields: [walletId], references: [id])
+  userId          String
+  type            WalletTransactionType
+  amount          Decimal               @db.Decimal(14, 2)
+  balanceAfter    Decimal?              @db.Decimal(14, 2)
+  referenceType   String?
+  referenceId     String?
+  description     String?
+  metadata        Json?
+  createdByUserId String?
+  createdAt       DateTime              @default(now())
+
+  @@index([organizationId, walletId])
+  @@index([organizationId, userId])
+  @@index([referenceType, referenceId])
+  @@unique([organizationId, userId, type, referenceType, referenceId])
+}
+
+model CreditRedemptionRequest {
+  id               String                 @id @default(cuid())
+  organizationId   String
+  walletId         String
+  wallet           Wallet                 @relation(fields: [walletId], references: [id])
+  userId           String
+  amount           Decimal                @db.Decimal(14, 2)
+  requestedItem    String?
+  notes            String?
+  status           CreditRedemptionStatus @default(REQUESTED)
+  reviewedByUserId String?
+  reviewedAt       DateTime?
+  fulfilledAt      DateTime?
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+
+  @@index([organizationId, status])
+  @@index([organizationId, userId])
+}
+
+model CreditRule {
+  id             String    @id @default(cuid())
+  organizationId String
+  wasteType      WasteType?
+  actionType     String
+  creditsPerKg   Decimal?  @db.Decimal(12, 2)
+  flatCredits    Decimal?  @db.Decimal(12, 2)
+  isActive       Boolean   @default(true)
+  metadata       Json?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([organizationId, actionType, isActive])
+}
+
+model ProductionBatch {
+  id                 String                @id @default(cuid())
+  organizationId     String
+  processorUserId    String
+  processor          User                  @relation(fields: [processorUserId], references: [id])
+  processingCenterId String?
+  processingCenter   ProcessingCenter?     @relation(fields: [processingCenterId], references: [id])
+  wasteType          WasteType
+  totalInputWeightKg Decimal               @db.Decimal(12, 3)
+  status             ProductionBatchStatus @default(IN_PROGRESS)
+  inputs             ProductionBatchInput[]
+  outputs            ProductionOutput[]
+  inventoryLots      InventoryLot[]
+  startedAt          DateTime              @default(now())
+  completedAt        DateTime?
+  notes              String?
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+
+  @@index([organizationId, processorUserId])
+  @@index([organizationId, status])
+}
+
+model ProductionBatchInput {
+  id                String           @id @default(cuid())
+  organizationId    String
+  productionBatchId String
+  productionBatch   ProductionBatch  @relation(fields: [productionBatchId], references: [id])
+  wasteSubmissionId String
+  wasteSubmission   WasteSubmission  @relation(fields: [wasteSubmissionId], references: [id])
+  inputWeightKg     Decimal          @db.Decimal(12, 3)
+  createdAt         DateTime         @default(now())
+
+  @@unique([productionBatchId, wasteSubmissionId])
+  @@unique([wasteSubmissionId])
+  @@index([organizationId, productionBatchId])
+}
+
+model ProductionOutput {
+  id                String          @id @default(cuid())
+  organizationId    String
+  productionBatchId String
+  productionBatch   ProductionBatch @relation(fields: [productionBatchId], references: [id])
+  productId         String
+  product           Product         @relation(fields: [productId], references: [id])
+  quantity          Decimal         @db.Decimal(12, 3)
+  unit              String
+  notes             String?
+  createdAt         DateTime        @default(now())
+
+  @@index([organizationId, productionBatchId])
+}
+
+model Product {
+  id           String          @id @default(cuid())
+  organizationId String
+  name         String
+  slug         String
+  description  String?
+  category     ProductCategory
+  unit         String
+  sellingPrice Decimal         @db.Decimal(14, 2)
+  isActive     Boolean         @default(true)
+  metadata     Json?
+  productionOutputs ProductionOutput[]
+  inventoryLots InventoryLot[]
+  inventoryMovements InventoryMovement[]
+  orderItems OrderItem[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@unique([organizationId, slug])
+  @@index([organizationId, isActive])
+}
+
+model InventoryLot {
+  id                      String           @id @default(cuid())
+  organizationId          String
+  productId               String
+  product                 Product          @relation(fields: [productId], references: [id])
+  quantityAvailable       Decimal          @db.Decimal(14, 3)
+  unit                    String
+  sourceProductionBatchId String?
+  sourceProductionBatch   ProductionBatch? @relation(fields: [sourceProductionBatchId], references: [id])
+  notes                   String?
+  movements               InventoryMovement[]
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+
+  @@index([organizationId, productId])
+}
+
+model InventoryMovement {
+  id              String                @id @default(cuid())
+  organizationId  String
+  productId       String
+  product         Product               @relation(fields: [productId], references: [id])
+  inventoryLotId  String?
+  inventoryLot    InventoryLot?         @relation(fields: [inventoryLotId], references: [id])
+  type            InventoryMovementType
+  quantity        Decimal               @db.Decimal(14, 3)
+  referenceType   String?
+  referenceId     String?
+  notes           String?
+  createdByUserId String
+  createdAt       DateTime              @default(now())
+
+  @@index([organizationId, productId])
+  @@index([referenceType, referenceId])
+}
+
+model BuyerProfile {
+  id             String   @id @default(cuid())
+  organizationId String
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id])
+  businessName   String?
+  buyerType      String?
+  address        String?
+  phone          String?
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([organizationId])
+}
+
+model Order {
+  id             String         @id @default(cuid())
+  organizationId String
+  buyerUserId    String
+  buyer          User           @relation(fields: [buyerUserId], references: [id])
+  status         OrderStatus    @default(PENDING)
+  paymentStatus  PaymentStatus  @default(UNPAID)
+  deliveryStatus DeliveryStatus @default(PENDING)
+  subtotalAmount Decimal        @db.Decimal(14, 2)
+  totalAmount    Decimal        @db.Decimal(14, 2)
+  notes          String?
+  items          OrderItem[]
+  payments       PaymentRecord[]
+  deliveries     DeliveryRecord[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([organizationId, buyerUserId])
+  @@index([organizationId, status])
+  @@index([organizationId, paymentStatus])
+  @@index([organizationId, deliveryStatus])
+}
+
+model OrderItem {
+  id             String   @id @default(cuid())
+  organizationId String
+  orderId        String
+  order          Order    @relation(fields: [orderId], references: [id])
+  productId      String
+  product        Product  @relation(fields: [productId], references: [id])
+  quantity       Decimal  @db.Decimal(14, 3)
+  unitPrice      Decimal  @db.Decimal(14, 2)
+  lineTotal      Decimal  @db.Decimal(14, 2)
+  createdAt      DateTime @default(now())
+
+  @@index([organizationId, orderId])
+}
+
+model PaymentRecord {
+  id             String        @id @default(cuid())
+  organizationId String
+  orderId        String?
+  order          Order?        @relation(fields: [orderId], references: [id])
+  amount         Decimal       @db.Decimal(14, 2)
+  status         PaymentStatus
+  method         String?
+  reference      String?
+  notes          String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([organizationId, orderId])
+}
+
+model DeliveryRecord {
+  id             String         @id @default(cuid())
+  organizationId String
+  orderId        String
+  order          Order          @relation(fields: [orderId], references: [id])
+  status         DeliveryStatus @default(PENDING)
+  recipientName  String?
+  recipientPhone String?
+  address        String?
+  dispatchedAt   DateTime?
+  deliveredAt    DateTime?
+  notes          String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([organizationId, orderId])
+}
+
+model ImpactMetricSnapshot {
+  id                    String   @id @default(cuid())
+  organizationId        String
+  periodStart           DateTime
+  periodEnd             DateTime
+  totalWasteKg          Decimal  @db.Decimal(14, 3)
+  organicWasteKg        Decimal  @db.Decimal(14, 3)
+  plasticWasteKg        Decimal  @db.Decimal(14, 3)
+  emissionsAvoidedKgCo2e Decimal @db.Decimal(14, 3)
+  plasticDivertedKg     Decimal  @db.Decimal(14, 3)
+  creditsIssued         Decimal  @db.Decimal(14, 2)
+  revenueAmount         Decimal  @db.Decimal(14, 2)
+  activeParticipants    Int
+  metadata              Json?
+  createdAt             DateTime @default(now())
+
+  @@index([organizationId, periodStart, periodEnd])
+}
+
+model ESGReport {
+  id                String          @id @default(cuid())
+  organizationId    String
+  periodStart       DateTime
+  periodEnd         DateTime
+  status            ESGReportStatus @default(GENERATED)
+  summary           Json
+  generatedByUserId String
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([organizationId, periodStart, periodEnd])
+}
+
+model CarbonComputationRecord {
+  id             String   @id @default(cuid())
+  organizationId String
+  referenceType  String
+  referenceId    String
+  formulaVersion String
+  valueKgCo2e    Decimal  @db.Decimal(14, 3)
+  metadata       Json
+  createdAt      DateTime @default(now())
+
+  @@index([organizationId, referenceType, referenceId])
+}
+
+model AIInsight {
+  id              String        @id @default(cuid())
+  organizationId  String
+  zoneId          String?
+  zone            Zone?         @relation(fields: [zoneId], references: [id])
+  type            AIInsightType
+  title           String
+  description     String
+  severity        String?
+  payload         Json
+  generatedAt     DateTime      @default(now())
+  createdByUserId String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([organizationId, type])
+  @@index([organizationId, zoneId])
+}
+
+model EnergyUnit {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  type           String
+  capacity       Decimal? @db.Decimal(14, 3)
+  isActive       Boolean  @default(true)
+  metadata       Json?
+  productionRecords EnergyProductionRecord[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([organizationId, isActive])
+}
+
+model EnergyConsumer {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  type           String?
+  contact        String?
+  address        String?
+  isActive       Boolean  @default(true)
+  usageRecords   EnergyUsageRecord[]
+  paymentRecords EnergyPaymentRecord[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([organizationId, isActive])
+}
+
+model EnergyProductionRecord {
+  id             String     @id @default(cuid())
+  organizationId String
+  energyUnitId   String
+  energyUnit     EnergyUnit @relation(fields: [energyUnitId], references: [id])
+  quantity       Decimal    @db.Decimal(14, 3)
+  unit           String
+  recordedAt     DateTime
+  notes          String?
+  createdAt      DateTime   @default(now())
+
+  @@index([organizationId, energyUnitId])
+}
+
+model EnergyUsageRecord {
+  id               String         @id @default(cuid())
+  organizationId   String
+  energyConsumerId String
+  energyConsumer   EnergyConsumer @relation(fields: [energyConsumerId], references: [id])
+  quantity         Decimal        @db.Decimal(14, 3)
+  unit             String
+  recordedAt       DateTime
+  notes            String?
+  createdAt        DateTime       @default(now())
+
+  @@index([organizationId, energyConsumerId])
+}
+
+model EnergyPaymentRecord {
+  id               String         @id @default(cuid())
+  organizationId   String
+  energyConsumerId String
+  energyConsumer   EnergyConsumer @relation(fields: [energyConsumerId], references: [id])
+  amount           Decimal        @db.Decimal(14, 2)
+  status           PaymentStatus
+  reference        String?
+  paidAt           DateTime?
+  notes            String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@index([organizationId, energyConsumerId])
+}
+
+model ReputationProfile {
+  id                    String   @id @default(cuid())
+  organizationId        String
+  userId                String   @unique
+  user                  User     @relation(fields: [userId], references: [id])
+  totalSubmissions      Int      @default(0)
+  approvedSubmissions   Int      @default(0)
+  rejectedSubmissions   Int      @default(0)
+  totalProcessedBatches Int      @default(0)
+  totalCreditsEarned    Decimal  @default(0) @db.Decimal(14, 2)
+  reliabilityScore      Decimal  @default(0) @db.Decimal(5, 2)
+  lastCalculatedAt      DateTime?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([organizationId, userId])
+}
+
+model AuditLog {
+  id             String   @id @default(cuid())
+  organizationId String?
+  actorUserId    String?
+  action         String
+  entityType     String
+  entityId       String?
+  oldValues      Json?
+  newValues      Json?
+  metadata       Json?
+  ipAddress      String?
+  userAgent      String?
+  createdAt      DateTime @default(now())
+
+  @@index([organizationId, createdAt])
+  @@index([actorUserId, createdAt])
+  @@index([organizationId, action, createdAt])
+  @@index([entityType, entityId])
+}
+
+model SystemSetting {
+  id             String             @id @default(cuid())
+  organizationId String?
+  key            String
+  value          Json
+  scope          SystemSettingScope
+  isActive       Boolean            @default(true)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@unique([organizationId, key])
+  @@index([scope, isActive])
+}

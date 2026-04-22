@@ -1,0 +1,40 @@
+const { Router } = require('express');
+const authRoutes = require('../modules/auth/auth.routes');
+const platformRoutes = require('../modules/platform/platform.routes');
+const userRoutes = require('../modules/users/users.routes');
+const geoRoutes = require('../modules/geo/geo.routes');
+const wasteRoutes = require('../modules/waste/waste.routes');
+const walletRoutes = require('../modules/wallet/wallet.routes');
+const productionRoutes = require('../modules/production/production.routes');
+const productRoutes = require('../modules/products/products.routes');
+const inventoryRoutes = require('../modules/inventory/inventory.routes');
+const orderRoutes = require('../modules/orders/orders.routes');
+const esgRoutes = require('../modules/esg/esg.routes');
+const reputationRoutes = require('../modules/reputation/reputation.routes');
+const aiRoutes = require('../modules/ai/ai.routes');
+const energyRoutes = require('../modules/energy/energy.routes');
+const auditRoutes = require('../modules/audit/audit.routes');
+const analyticsRoutes = require('../modules/analytics/analytics.routes');
+const healthRoutes = require('../modules/health/health.routes');
+
+const router = Router();
+
+router.use('/auth', authRoutes);
+router.use('/platform', platformRoutes);
+router.use('/users', userRoutes);
+router.use('/geo', geoRoutes);
+router.use('/waste', wasteRoutes);
+router.use('/wallet', walletRoutes);
+router.use('/production', productionRoutes);
+router.use('/products', productRoutes);
+router.use('/inventory', inventoryRoutes);
+router.use('/orders', orderRoutes);
+router.use('/esg', esgRoutes);
+router.use('/reputation', reputationRoutes);
+router.use('/ai', aiRoutes);
+router.use('/energy', energyRoutes);
+router.use('/audit', auditRoutes);
+router.use('/analytics', analyticsRoutes);
+router.use('/health', healthRoutes);
+
+module.exports = router;
