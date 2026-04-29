@@ -16,14 +16,6 @@ interface FormErrors {
   password?: string;
 }
 
-const demoAccounts = [
-  { label: "Super Admin", email: "superadmin@waste2value.africa" },
-  { label: "Org Admin", email: "admin@ecoloop.co.ke" },
-  { label: "Collector", email: "brian.collector@ecoloop.co.ke" },
-  { label: "Processor", email: "jkariuki@ecoloop.co.ke" },
-  { label: "Buyer", email: "buyer@valuebridge.co.ke" },
-];
-
 function routeByRole(role: PlatformRole) {
   if (role === "SUPER_ADMIN") {
     return "/dashboard";
@@ -217,28 +209,6 @@ export default function LoginPage() {
                 Sign In
               </Button>
             </form>
-
-            <div className="mt-4 rounded-xl border border-border bg-surface-soft p-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Demo Accounts
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">Shared password: Admin@123</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {demoAccounts.map((account) => (
-                  <button
-                    key={account.email}
-                    type="button"
-                    onClick={() => {
-                      setEmail(account.email);
-                      setPassword("Admin@123");
-                    }}
-                    className="rounded-full border border-border bg-white px-2.5 py-1 text-xs font-semibold text-muted-foreground transition hover:text-foreground"
-                  >
-                    {account.label}
-                  </button>
-                ))}
-              </div>
-            </div>
 
             <p className="mt-4 text-center text-xs text-muted-foreground">
               Secure platform access for authorized Waste2Value users.
